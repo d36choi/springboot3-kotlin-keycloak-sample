@@ -1,0 +1,35 @@
+secret: gdQ73wGr7bAhLHXtZeGgZUmSgs5CvpcN
+client-id: kotlin
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ${client-id}
+#            for not keycloak public client
+#            https://stackoverflow.com/questions/74571191/use-keycloak-spring-adapter-with-spring-boot-3/74572732#74572732
+            client-secret: ${secret}
+            authorization-grant-type: authorization_code
+            scope: openid
+#            client-authentication-method: POST
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:18080/realms/client
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:18080/realms/client
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+
+server:
+  servlet:
+    encoding:
+#      mustache encoding
+      force-response: true
