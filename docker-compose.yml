@@ -20,9 +20,8 @@ services:
       postgres_svr:
         condition: service_healthy
     networks:
-      network_sso:
-        ipv4_address: "10.0.0.2"
-
+      - my_network
+#    network_mode: "host"
   postgres_svr:
     image: postgres:10
     command: postgres -c 'max_connections=200' && postgres -c 'shared_buffers=24MB'
@@ -36,13 +35,10 @@ services:
     ports:
       - "5432:5432"
     networks:
-      network_sso:
-        ipv4_address: "10.0.0.3"
+      - my_network
+#    network_mode: "host"
+
+
 networks:
-  network_sso:
-    ipam:
-      # IP Address management
-      driver: default
-      # default = bridge
-      config:
-        - subnet: "10.0.0.0/24"    
+  my_network:
+    driver: bridge
