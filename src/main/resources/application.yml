@@ -1,6 +1,8 @@
 secret: fhIi6Lc1DAuB6Qkb9ZNoiXGIOQfRk1xW
 client-id: myblog
 realm: myrealm
+redis:
+  password: test
 
 spring:
   security:
@@ -22,6 +24,20 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:18080/realms/${realm}
+
+
+  session:
+    redis:
+      namespace: myblog:session
+      repository-type: default
+
+  data:
+    redis:
+      host: localhost
+      password: ${redis.password}
+      port: 6379
+
+
 logging:
   level:
     org:
@@ -34,3 +50,6 @@ server:
     encoding:
 #      mustache encoding
       force-response: true
+    session:
+      cookie:
+        name: JSESSIONID
