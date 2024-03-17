@@ -46,7 +46,10 @@ internal class SecurityConfig(private val keycloakLogoutHandler: KeycloakLogoutH
             auth
                 .requestMatchers(AntPathRequestMatcher("/mypage*"))
                 .authenticated()
-                .requestMatchers(AntPathRequestMatcher("/"))
+                .requestMatchers(
+                    AntPathRequestMatcher("/"),
+                    AntPathRequestMatcher("/sso-logout")
+                )
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -64,7 +67,7 @@ internal class SecurityConfig(private val keycloakLogoutHandler: KeycloakLogoutH
                 .logoutUrl("/logout")
         }
 
-
+        http.csrf { csrf -> csrf.disable() }
         return http.build()
     }
 
