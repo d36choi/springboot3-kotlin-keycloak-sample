@@ -1,5 +1,6 @@
-secret: gdQ73wGr7bAhLHXtZeGgZUmSgs5CvpcN
-client-id: kotlin
+secret: fhIi6Lc1DAuB6Qkb9ZNoiXGIOQfRk1xW
+client-id: myblog
+realm: myrealm
 
 spring:
   security:
@@ -16,11 +17,11 @@ spring:
 #            client-authentication-method: POST
         provider:
           keycloak:
-            issuer-uri: http://localhost:18080/realms/client
+            issuer-uri: http://localhost:18080/realms/${realm}
             user-name-attribute: preferred_username
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:18080/realms/client
+          issuer-uri: http://localhost:18080/realms/${realm}
 logging:
   level:
     org:
