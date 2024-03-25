@@ -53,3 +53,4 @@ server:
     session:
       cookie:
         name: JSESSIONID
+  port: 8080

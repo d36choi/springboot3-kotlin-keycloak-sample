@@ -21,9 +21,13 @@ import org.springframework.security.web.session.HttpSessionEventPublisher
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import java.util.stream.Collectors
 
+
 @Configuration
 @EnableWebSecurity
 internal class SecurityConfig(private val keycloakLogoutHandler: KeycloakLogoutHandler) {
+
+
+
     @Bean
     fun sessionRegistry(): SessionRegistry {
         return SessionRegistryImpl()

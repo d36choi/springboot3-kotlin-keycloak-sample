@@ -1,5 +1,6 @@
 package io.keycloak.keycloaklogout.controller
 
+import jakarta.servlet.http.HttpSession
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set
@@ -11,9 +12,10 @@ import java.security.Principal
 class MyPageController {
 
     @GetMapping("/mypage")
-    fun myPage(model: Model, principal: Principal): String {
+    fun myPage(model: Model, principal: Principal, session: HttpSession): String {
         model["title"] = "myPage"
         model["id"] = principal.name
+        println(session.id)
         return "mypage"
     }
 }
