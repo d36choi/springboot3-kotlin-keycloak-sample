@@ -1,8 +1,9 @@
 package io.keycloak.keycloaklogout.controller
 
+import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.keycloak.keycloaklogout.dto.KeycloakLogoutToken
-import org.springframework.data.redis.core.RedisTemplate
+import io.keycloak.keycloaklogout.service.IndexedSessionService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -13,18 +14,19 @@ import java.util.*
 
 
 @RestController
-class LogoutController(private val redisTemplate: RedisTemplate<String, String>) {
+class LogoutController(
+    val indexedSessionService: IndexedSessionService
+) {
 
     @PostMapping("/sso-logout", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun backchannelLogout(@RequestParam("logout_token") logoutToken: String) {
 
+
         println(logoutToken)
-
-        val keycloakLogoutToken = parseKeycloakLogoutToken(logoutToken)
-        print(keycloakLogoutToken)
-
-        redisTemplate.opsForHash<String, String>().delete("spring:session:sessions", keycloakLogoutToken.sessionId);
+        val parseKeycloakLogoutToken: KeycloakLogoutToken = parseKeycloakLogoutToken(logoutToken)
+        print(parseKeycloakLogoutToken)
         //todo:: redis session 제거!
+        indexedSessionService.removeAllByPrincipalUsername(parseKeycloakLogoutToken.subject)
 
     }
 
@@ -37,15 +39,15 @@ class LogoutController(private val redisTemplate: RedisTemplate<String, String>)
         val keyFactory = KeyFactory.getInstance("RSA")
         val publicKey = keyFactory.generatePublic(X509EncodedKeySpec(publicKeyBytes))
 
-        val claims = Jwts.parserBuilder()
+        val claims: Claims = Jwts.parserBuilder()
             .setSigningKey(publicKey)
             .build()
             .parseClaimsJws(token).body
 
+
         val sessionId = claims.subject
         val issuer = claims.issuer
         val issuedAt = claims.issuedAt
-//        val expiresAt = claims.expiration
         val audience = claims.audience
         val subject = claims.subject
         val tokenType = claims.get("typ", String::class.java)
@@ -55,7 +57,6 @@ class LogoutController(private val redisTemplate: RedisTemplate<String, String>)
             sessionId,
             issuer,
             issuedAt,
-//            expiresAt,
             audience,
             subject,
             tokenType,
@@ -63,23 +64,4 @@ class LogoutController(private val redisTemplate: RedisTemplate<String, String>)
         )
     }
 
-//    @PostMapping("/sso-logout", produces = [MediaType.APPLICATION_JSON_VALUE])
-//    fun backchannelLogout(@RequestParam("logout_token") logoutToken: String) {
-//
-//        val tokenParts = logoutToken.split(".")
-//
-//
-//        val decoder = Base64.getUrlDecoder()
-//
-//        val header = String(decoder.decode(tokenParts[0]))
-//        val payload = String(decoder.decode(tokenParts[1]))
-//        val signature = String(decoder.decode(tokenParts[2]))
-//
-//
-//        val keycloakTokenPayload = Json.decodeFromString<KeycloakTokenPayload>(payload)
-//        println("sid: ${keycloakTokenPayload.sid}")
-//
-//
-//
-//    }
 }

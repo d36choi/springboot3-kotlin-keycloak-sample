@@ -2,13 +2,13 @@ package io.keycloak.keycloaklogout.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisIndexedHttpSession
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer
 import org.springframework.session.web.http.CookieSerializer
 import org.springframework.session.web.http.DefaultCookieSerializer
 
 @Configuration
-@EnableRedisHttpSession
+@EnableRedisIndexedHttpSession
 class HttpSessionConfig : AbstractHttpSessionApplicationInitializer() {
 
     @Bean

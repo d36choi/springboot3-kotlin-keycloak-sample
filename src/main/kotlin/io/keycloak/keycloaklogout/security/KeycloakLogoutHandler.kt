@@ -20,18 +20,21 @@ class KeycloakLogoutHandler(private val restTemplate: RestTemplate) : LogoutHand
     }
 
     private fun logoutFromKeycloak(user: OidcUser) {
-        val endSessionEndpoint = user.issuer.toString() + "/protocol/openid-connect/logout"
+        val endSessionEndpoint = "${user.issuer}/protocol/openid-connect/logout"
         val builder = UriComponentsBuilder
             .fromUriString(endSessionEndpoint)
             .queryParam("id_token_hint", user.idToken.tokenValue)
+
         val logoutResponse = restTemplate.getForEntity(
             builder.toUriString(), String::class.java
         )
-        if (logoutResponse.statusCode.is2xxSuccessful) {
-            logger.info("Successfully logged out from Keycloak")
-        } else {
-            logger.error("Could not propagate logout to Keycloak")
+        when {
+            logoutResponse.statusCode.is2xxSuccessful -> {
+                logger.info("Successfully logged out from Keycloak")
+            }
+            else -> logger.error("Could not propagate logout to Keycloak")
         }
+
     }
 
     companion object {

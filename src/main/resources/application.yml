@@ -43,6 +43,7 @@ logging:
     org:
       springframework:
         security: DEBUG
+        session: DEBUG
 
 
 server:
