@@ -20,7 +20,7 @@ spring:
         provider:
           keycloak:
             issuer-uri: http://localhost:18080/realms/${realm}
-            user-name-attribute: preferred_username
+            user-name-attribute: sub
       resourceserver:
         jwt:
           issuer-uri: http://localhost:18080/realms/${realm}
