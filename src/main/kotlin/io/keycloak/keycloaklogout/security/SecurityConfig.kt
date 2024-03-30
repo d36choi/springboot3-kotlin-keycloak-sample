@@ -24,7 +24,7 @@ import java.util.stream.Collectors
 @Configuration
 @EnableWebSecurity
 internal class SecurityConfig(private val keycloakLogoutHandler: KeycloakLogoutHandler,
-    private val springSecurityProperties: SpringSecurityProperties) {
+    private val springResourceServerJwtConfig: SpringResourceServerJwtConfig) {
 
 
 
@@ -63,7 +63,7 @@ internal class SecurityConfig(private val keycloakLogoutHandler: KeycloakLogoutH
                 .jwt {
                     // Customizer.default로 하면 jwtDecoder를 직접 만들어야함. 아래처럼 하면 알아서만듬
                     // OAuth2ResourceServerConfigurer 참고
-                    jwt -> jwt.jwkSetUri(springSecurityProperties.issuerUri)
+                    jwt -> jwt.jwkSetUri(springResourceServerJwtConfig.issuerUri)
                 }
         }
         http.oauth2Login { auth ->

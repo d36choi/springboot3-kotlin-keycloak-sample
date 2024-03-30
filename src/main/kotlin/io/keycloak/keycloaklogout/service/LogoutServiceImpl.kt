@@ -3,7 +3,7 @@ package io.keycloak.keycloaklogout.service
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.keycloak.keycloaklogout.dto.KeycloakLogoutToken
-import io.keycloak.keycloaklogout.security.SpringSecurityProperties
+import io.keycloak.keycloaklogout.security.SpringResourceServerJwtConfig
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.stereotype.Service
 import java.security.KeyFactory
@@ -11,7 +11,7 @@ import java.security.spec.X509EncodedKeySpec
 import java.util.*
 
 @Service
-class LogoutServiceImpl(val springSecurityProperties: SpringSecurityProperties,
+class LogoutServiceImpl(val springResourceServerJwtConfig: SpringResourceServerJwtConfig,
                         val indexedSessionService: IndexedSessionService,
                         private val jwtDecoder: JwtDecoder
 
@@ -33,7 +33,7 @@ class LogoutServiceImpl(val springSecurityProperties: SpringSecurityProperties,
 
     private fun parseTokenWithJwts(token: String): KeycloakLogoutToken {
         // 방법2. Jwts 라이브러리를 이용할 경우, JwtDecoder를 사용하지 않아도 됩니다.
-        val publicKey = springSecurityProperties.issuerUri
+        val publicKey = springResourceServerJwtConfig.issuerUri
             .let { Base64.getDecoder().decode(it) }
             .let { KeyFactory.getInstance("RSA").generatePublic(X509EncodedKeySpec(it)) }
 

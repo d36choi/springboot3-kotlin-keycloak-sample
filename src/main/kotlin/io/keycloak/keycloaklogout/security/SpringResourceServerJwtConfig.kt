@@ -5,6 +5,6 @@ import org.springframework.stereotype.Component
 
 @Component
 @ConfigurationProperties(prefix = "spring.security.oauth2.resourceserver.jwt")
-class SpringSecurityProperties {
+class SpringResourceServerJwtConfig {
     lateinit var issuerUri: String
 }

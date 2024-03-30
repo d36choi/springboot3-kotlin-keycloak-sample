@@ -6,11 +6,11 @@ import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-class HtmlController {
+class IndexController {
 
   @GetMapping("/")
-  fun blog(model: Model): String {
-    model["title"] = "Blog"
+  fun index(model: Model): String {
+    model["title"] = "MyBlog"
     return "blog"
   }
 
