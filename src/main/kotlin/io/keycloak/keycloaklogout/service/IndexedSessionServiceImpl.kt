@@ -1,38 +1,27 @@
-package io.keycloak.keycloaklogout.service;
+package io.keycloak.keycloaklogout.service
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.Session;
-import org.springframework.stereotype.Service;
-
-import java.security.Principal;
-import java.util.Collection;
-import java.util.Map;
-
+import org.slf4j.LoggerFactory
+import org.springframework.session.FindByIndexNameSessionRepository
+import org.springframework.session.Session
+import org.springframework.stereotype.Service
+import java.security.Principal
 
 @Service
-public class IndexedSessionServiceImpl implements IndexedSessionService {
-
-    private static final Logger logger = LoggerFactory.getLogger(IndexedSessionService.class);
-    public final FindByIndexNameSessionRepository<? extends Session> sessionRepository;
-
-    public IndexedSessionServiceImpl(FindByIndexNameSessionRepository<? extends Session> sessionRepository) {
-        this.sessionRepository = sessionRepository;
-    }
-
-
-    @Override
-    public void removeAllByPrincipalUsername(String username) {
-        Map<String, ? extends Session> byPrincipalName = sessionRepository.findByPrincipalName(username);
-        for (Session value : byPrincipalName.values()) {
-            logger.info("remove session:: {}", value.getId());
-            sessionRepository.deleteById(value.getId());
+class IndexedSessionServiceImpl(val sessionRepository: FindByIndexNameSessionRepository<out Session>) :
+    IndexedSessionService {
+    override fun removeAllByPrincipalUsername(username: String) {
+        val byPrincipalName = sessionRepository.findByPrincipalName(username)
+        for (value in byPrincipalName.values) {
+            logger.info("remove session:: {}", value.id)
+            sessionRepository.deleteById(value.id)
         }
     }
 
-    @Override
-    public Collection<? extends Session> getAllSessions(Principal principal) {
-        return this.sessionRepository.findByPrincipalName(principal.getName()).values();
+    override fun getAllSessions(principal: Principal): Collection<Session> {
+        return sessionRepository.findByPrincipalName(principal.name).values
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(IndexedSessionService::class.java)
     }
 }
