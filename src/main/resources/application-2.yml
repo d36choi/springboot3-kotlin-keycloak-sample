@@ -1,0 +1,57 @@
+secret: XLLweLDgv13oSk7UeANSjX8yr19SGWyD
+client-id: myblog2
+realm: myrealm
+redis:
+  password: test
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ${client-id}
+#            for not keycloak public client
+#            https://stackoverflow.com/questions/74571191/use-keycloak-spring-adapter-with-spring-boot-3/74572732#74572732
+            client-secret: ${secret}
+            authorization-grant-type: authorization_code
+            scope: openid
+#            client-authentication-method: POST
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:18080/realms/${realm}
+            user-name-attribute: sub
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:18080/realms/${realm}
+
+
+  session:
+    redis:
+      namespace: myblog:session
+      repository-type: default
+
+  data:
+    redis:
+      host: localhost
+      password: ${redis.password}
+      port: 6379
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        session: DEBUG
+
+
+server:
+  servlet:
+    encoding:
+#      mustache encoding
+      force-response: true
+    session:
+      cookie:
+        name: JSESSIONID
+  port: 8081
