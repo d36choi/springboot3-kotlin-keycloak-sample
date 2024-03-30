@@ -2,7 +2,6 @@ package io.keycloak.keycloaklogout.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer
@@ -24,7 +23,8 @@ import java.util.stream.Collectors
 
 @Configuration
 @EnableWebSecurity
-internal class SecurityConfig(private val keycloakLogoutHandler: KeycloakLogoutHandler) {
+internal class SecurityConfig(private val keycloakLogoutHandler: KeycloakLogoutHandler,
+    private val springSecurityProperties: SpringSecurityProperties) {
 
 
 
@@ -60,7 +60,11 @@ internal class SecurityConfig(private val keycloakLogoutHandler: KeycloakLogoutH
         }
         http.oauth2ResourceServer { oauth2: OAuth2ResourceServerConfigurer<HttpSecurity?> ->
             oauth2
-                .jwt(Customizer.withDefaults())
+                .jwt {
+                    // Customizer.default로 하면 jwtDecoder를 직접 만들어야함. 아래처럼 하면 알아서만듬
+                    // OAuth2ResourceServerConfigurer 참고
+                    jwt -> jwt.jwkSetUri(springSecurityProperties.issuerUri)
+                }
         }
         http.oauth2Login { auth ->
             auth.defaultSuccessUrl("/mypage")

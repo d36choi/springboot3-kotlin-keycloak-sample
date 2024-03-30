@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 
 @Service
@@ -31,18 +30,7 @@ public class IndexedSessionServiceImpl implements IndexedSessionService {
             sessionRepository.deleteById(value.getId());
         }
     }
-    @Override
-    public void removeAllByPrincipal(Principal principal) {
-        removeAllByPrincipalUsername(principal.getName());
-    }
 
-    @Override
-    public void removeSession(Principal principal, String sessionIdToDelete) {
-        Set<String> usersSessionIds = this.sessionRepository.findByPrincipalName(principal.getName()).keySet();
-        if (usersSessionIds.contains(sessionIdToDelete)) {
-            this.sessionRepository.deleteById(sessionIdToDelete);
-        }
-    }
     @Override
     public Collection<? extends Session> getAllSessions(Principal principal) {
         return this.sessionRepository.findByPrincipalName(principal.getName()).values();

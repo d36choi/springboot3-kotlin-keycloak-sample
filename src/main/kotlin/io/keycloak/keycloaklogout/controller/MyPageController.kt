@@ -1,30 +1,24 @@
 package io.keycloak.keycloaklogout.controller
 
-import io.keycloak.keycloaklogout.service.IndexedSessionService
 import jakarta.servlet.http.HttpSession
-import org.springframework.session.Session
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
+import org.springframework.security.web.authentication.WebAuthenticationDetails
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
-import java.security.Principal
 
 
 @Controller
-class MyPageController(
-    val indexedSessionService: IndexedSessionService
-) {
+class MyPageController {
 
     @GetMapping("/mypage")
-    fun myPage(model: Model, principal: Principal, session: HttpSession): String {
+    fun myPage(model: Model, session: HttpSession, oauth: OAuth2AuthenticationToken): String {
+        // OAuth2AuthenticationToken는 Principal구현체이며 OAuth2LoginAuthenticationFilter에 의해 생성(추측)
         model["title"] = "myPage"
-        model["id"] = principal.name
+        model["id"] = oauth.principal.attributes["preferred_username"]
+        model["ip"] = (oauth.details as? WebAuthenticationDetails)?.remoteAddress ?: ""
 
-        val allSessions: MutableCollection<out Session> = indexedSessionService.getAllSessions(principal)
-        val toList = allSessions.toList()
-        if (toList.isNotEmpty()) {
-            println(toList[0].id)
-        }
         return "mypage"
     }
 }
