@@ -13,7 +13,6 @@ public class SessionEventListener {
     @EventListener
     public void processSessionCreatedEvent(SessionCreatedEvent event) {
         // do the necessary work
-        System.out.println("event.getSessionId() = " + event.getSessionId());
     }
 
     @EventListener
